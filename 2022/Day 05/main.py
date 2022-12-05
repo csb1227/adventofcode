@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from collections import deque
+from copy import deepcopy
 
 
 @dataclass
@@ -64,17 +65,29 @@ def parse_input(x):
         return extract_crates(crates), extract_instructions(instructions)
 
 
-def execute_instructions(crates, instructions):
-    print(crates)
+def execute_part1(crates, instructions):
     for instruction in instructions:
         for i in range(instruction.move):
             crates[instruction.target-1].append(crates[instruction.source-1].pop())
+    top = []
+    for stack in crates:
+        top.append(stack.pop())
+
+    return ''.join(top)
+
+
+def execute_part2(crates, instructions):
+    for instruction in instructions:
+        crane = deque()
+        for i in range(instruction.move):
+            crane.appendleft(crates[instruction.source-1].pop())
+        crates[instruction.target-1].extend(crane)
 
     top = []
-    for crate in crates:
-        top.append(crate.pop())
+    for stack in crates:
+        top.append(stack.pop())
 
-    print(''.join(top))
+    return ''.join(top)
 
 
 if __name__ == '__main__':
@@ -83,6 +96,6 @@ if __name__ == '__main__':
 
     crates, instructions = parse_input(puzzle_input)
 
-    execute_instructions(crates, instructions)
+    print(f'Part 1: {execute_part1(deepcopy(crates), instructions)}')
 
-
+    print(f'Part 2: {execute_part2(deepcopy(crates), instructions)}')
