@@ -2,7 +2,7 @@
 name = "day 06"
 version = "0.1.0"
 description = ""
-authors = ["Scott Barclay <scott.barclay@ncontracts.com>"]
+authors = ["Scott Barclay <75497242+csb1227@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
