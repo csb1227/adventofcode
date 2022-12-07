@@ -1,12 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
-class Command:
-    instruction: str
-    parameters: str
-
-
+# Yeah, I know. They didn't start out the same.
 @dataclass
 class Directory:
     name: str
@@ -67,7 +62,12 @@ def mark_for_deletion(filesystem, threshold):
             mark_for_deletion(child, threshold)
 
 
-space_saved = 0
+def find_delete_options(filesystem, threshold):
+    if isinstance(filesystem, Directory):
+        if filesystem.size >= threshold:
+            delete_options.append(filesystem.size)
+        for child in filesystem.children:
+            find_delete_options(child, threshold)
 
 
 def calculate_space_saved(filesystem):
@@ -104,10 +104,18 @@ if __name__ == '__main__':
     command_line = open_commands(puzzle_input)
 
     filesystem = parse_command_line(command_line)
+    # print_filesystem(filesystem)
     calculate_directory_size(filesystem)
     mark_for_deletion(filesystem, 100000)
-    print_filesystem(filesystem)
+    space_saved = 0
     calculate_space_saved(filesystem)
-    print(space_saved)
+    print(f'Part 1: {space_saved}')
+
+    free_space = 70000000 - filesystem.size
+    space_needed = 30000000 - free_space
+    delete_options = []
+    find_delete_options(filesystem, space_needed)
+    print(f'Part 2: {sorted(delete_options)[0]}')
+
 
 
