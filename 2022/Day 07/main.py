@@ -105,6 +105,7 @@ if __name__ == '__main__':
 
     filesystem = parse_command_line(command_line)
     # print_filesystem(filesystem)
+
     calculate_directory_size(filesystem)
     mark_for_deletion(filesystem, 100000)
     space_saved = 0
