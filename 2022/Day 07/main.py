@@ -117,6 +117,3 @@ if __name__ == '__main__':
     delete_options = []
     find_delete_options(filesystem, space_needed)
     print(f'Part 2: {sorted(delete_options)[0]}')
-
-
-
