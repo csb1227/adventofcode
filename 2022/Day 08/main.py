@@ -93,6 +93,3 @@ if __name__ == '__main__':
     forest_raw = open_forest(puzzle_input)
     forest = build_forest(forest_raw)
     print(f'Part 1: {forest.visible_trees}')
-
-# 1832 too low
-# 9224 too high
