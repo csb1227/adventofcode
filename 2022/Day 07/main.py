@@ -20,6 +20,23 @@ class File:
     delete: bool = False
 
 
+class Directory2(object):
+    def __init__(self, name, parent, children):
+        self.name = name
+        self.parent = parent
+        self.children = children
+        self.size = self._get_size()
+
+    def _get_size(self):
+        return 0
+
+
+def buile_directories_2(command_line_raw):
+    root = Directory2('/', None, [])
+    current_directory = root
+    for line
+
+
 def build_directories(l):
     root = Directory('/', None, [], 0)
     current_directory = root
