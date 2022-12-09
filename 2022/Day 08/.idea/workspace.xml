@@ -2,19 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dcb9a85e-4723-42fc-a9f5-3250c91425d5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../Day 09/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/.idea/Day 09.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/input/example.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/input/puzzle_input.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Day 09/input/example_part2.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Day 09/part2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
