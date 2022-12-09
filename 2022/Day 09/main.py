@@ -4,95 +4,132 @@ def open_ropes(r):
 
 
 class Instruction(object):
-    def __init__(self, raw_instruction):
-        self.direction = raw_instruction[0]
-        self.distance = int(raw_instruction[1])
+    def __init__(self, direction, distance):
+        self.direction = direction
+        self.distance = int(distance)
+        self.step_dict = {
+            'U': Coordinate(0, 1),
+            'D': Coordinate(0, -1),
+            'R': Coordinate(1, 0),
+            'L': Coordinate(-1, 0),
+            'UR': Coordinate(1, 1),
+            'UL': Coordinate(-1, 1),
+            'DR': Coordinate(1, -1),
+            'DL': Coordinate(-1, -1)
+        }
 
     def __repr__(self):
+        return (self.direction, self.distance)
+
+    def __str__(self):
         return f'{self.direction} {self.distance}'
+
+    def steps(self):
+        for s in range(self.distance):
+            yield self.step_dict[self.direction]
+
+
+class Coordinate(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __repr__(self):
+        return f'({self.x}, {self.y})'
+
+    def __str__(self):
+        return f'({self.x}, {self.y})'
+
+    def shift(self, coordinate):
+        self.x += coordinate.x
+        self.y += coordinate.y
 
 
 class Knot(object):
-    def __init__(self, name):
-        self.name = name
-        self.coords = (0, 0)
-        self.path = [(0, 0)]
+    def __init__(self, coordinate, order=0, follows=None, followed_by=None):
+        self.coordinate = coordinate
+        self.order = order
+        self.path = [str(Coordinate(0, 0))]
+        self.follows = follows
+        self.followed_by = followed_by
 
-    def __repr__(self):
-        return f'{self.name} knot\n' \
-               f'{self.coords}\n' \
-               f'{self.path}\n' \
-               f'visited: {len(set(self.visited))}\n'
+    def __str__(self):
+        return f'Knot {self.order}.\n' \
+               f'Coordinate: {self.coordinate}\n' \
+               f'Path: {self.path}\n' \
+               f'Visited: {self.get_visited()}'
 
-    def get_visited_coords(self):
-        return set(self.path)
+    def get_visited(self):
+        return len(set(self.path))
 
-    visited = property(get_visited_coords, None)
+    def move(self, instruction):
+        for step in instruction.steps():
+            self.coordinate.shift(step)
+            self.path.append(str(Coordinate(self.coordinate.x, self.coordinate.y)))
+            if self.followed_by:
+                x_diff = self.coordinate.x - self.followed_by.coordinate.x
+                y_diff = self.coordinate.y - self.followed_by.coordinate.y
 
-    def move(self, instruction, tail=None):
-        if instruction.direction == 'U':
-            for y in range(instruction.distance):
-                next_coords = (self.coords[0], self.coords[1] + y + 1)
-                self.path.append(next_coords)
-                if tail:
-                    tail.follow(self.path)
-            self.coords = self.path[-1]
+                if x_diff > 1 and y_diff == 0:
+                    self.followed_by.move(Instruction('R', 1))
+                elif x_diff < -1 and y_diff == 0:
+                    self.followed_by.move(Instruction('L', 1))
+                elif x_diff == 0 and y_diff > 1:
+                    self.followed_by.move(Instruction('U', 1))
+                elif x_diff == 0 and y_diff < -1:
+                    self.followed_by.move(Instruction('D', 1))
 
-        elif instruction.direction == 'R':
-            for x in range(instruction.distance):
-                next_coords = (self.coords[0] + x + 1, self.coords[1])
-                self.path.append(next_coords)
-                if tail:
-                    tail.follow(self.path)
-            self.coords = self.path[-1]
-
-        elif instruction.direction == 'D':
-            for y in range(instruction.distance):
-                next_coords = (self.coords[0], self.coords[1] - y - 1)
-                self.path.append(next_coords)
-                if tail:
-                    tail.follow(self.path)
-            self.coords = self.path[-1]
-
-        else:
-            for x in range(instruction.distance):
-                next_coords = (self.coords[0] - x - 1, self.coords[1])
-                self.path.append(next_coords)
-                if tail:
-                    tail.follow(self.path)
-            self.coords = self.path[-1]
-
-    def follow(self, leader_path):
-        x_diff = leader_path[-1][0] - self.coords[0]
-        y_diff = leader_path[-1][1] - self.coords[1]
-
-        if x_diff > 1:
-            self.coords = (leader_path[-1][0]-1, leader_path[-1][1])
-        if x_diff < -1:
-            self.coords = (leader_path[-1][0] + 1, leader_path[-1][1])
-        if y_diff > 1:
-            self.coords = (leader_path[-1][0], leader_path[-1][1] - 1)
-        if y_diff < -1:
-            self.coords = (leader_path[-1][0], leader_path[-1][1] + 1)
-
-        self.path.append(self.coords)
+                elif (x_diff >= 1 and y_diff > 1) or (x_diff > 1 and y_diff >= 1):
+                    self.followed_by.move(Instruction('UR', 1))
+                elif (x_diff <= -1 and y_diff > 1) or (x_diff < -1 and y_diff >= 1):
+                    self.followed_by.move(Instruction('UL', 1))
+                elif (x_diff >= 1 and y_diff < -1) or (x_diff > 1 and y_diff <= -1):
+                    self.followed_by.move(Instruction('DR', 1))
+                elif (x_diff <= -1 and y_diff < -1) or (x_diff < -1 and y_diff <= -1):
+                    self.followed_by.move(Instruction('DL', 1))
 
 
-def execute_instructions(instructions):
-    head = Knot('head')
-    tail = Knot('tail')
+class Rope(object):
+    def __init__(self, num_knots, starting_coordinate):
+        self.starting_coordinate = starting_coordinate
+        self.knots = self.tie_rope(num_knots)
 
+    def tie_rope(self, num_knots):
+        r = []
+        for nk in range(num_knots):
+            r.append(Knot(Coordinate(self.starting_coordinate.x, self.starting_coordinate.y)))
+
+        for ix, k in enumerate(r):
+            k.order = ix
+            if ix == 0:
+                k.followed_by = r[ix + 1]
+            elif ix == len(r) - 1:
+                k.follows = r[ix-1]
+            else:
+                k.follows = r[ix-1]
+                k.followed_by = r[ix+1]
+
+        return r
+
+
+def execute_instructions(rope, instructions):
     for instruction in instructions:
-        head.move(instruction, tail)
-
-    return head, tail
+        rope.knots[0].move(instruction)
 
 
 if __name__ == '__main__':
     example_input = './input/example.txt'
+    example_input2 = './input/example_part2.txt'
     puzzle_input = './input/puzzle_input.txt'
-    instructions = [Instruction(instruction.split(' ')) for instruction in open_ropes(puzzle_input)]
-    # print(instructions)
-    head, tail = execute_instructions(instructions)
+    part1_example = [Instruction(i[0], i[1]) for i in [instruction.split(' ') for instruction in open_ropes(example_input)]]
+    part2_example = [Instruction(i[0], i[1]) for i in [instruction.split(' ') for instruction in open_ropes(example_input2)]]
+    instructions = [Instruction(i[0], i[1]) for i in [instruction.split(' ') for instruction in open_ropes(puzzle_input)]]
 
-    print(f'Part 1: {len(tail.visited)}')
+    rope1 = Rope(2, Coordinate(0, 0))
+    rope2 = Rope(10, Coordinate(11, 5))
+
+    execute_instructions(rope1, instructions)
+    execute_instructions(rope2, instructions)
+
+    print(f'Part 1: {rope1.knots[-1].get_visited()}')
+    print(f'Part 2: {rope2.knots[-1].get_visited()}')
