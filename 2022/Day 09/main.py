@@ -46,11 +46,10 @@ class Coordinate(object):
 
 
 class Knot(object):
-    def __init__(self, coordinate, order=0, follows=None, followed_by=None):
+    def __init__(self, coordinate, order=0, followed_by=None):
         self.coordinate = coordinate
         self.order = order
         self.path = [str(Coordinate(0, 0))]
-        self.follows = follows
         self.followed_by = followed_by
 
     def __str__(self):
@@ -101,13 +100,8 @@ class Rope(object):
 
         for ix, k in enumerate(r):
             k.order = ix
-            if ix == 0:
+            if ix < len(r)-1:
                 k.followed_by = r[ix + 1]
-            elif ix == len(r) - 1:
-                k.follows = r[ix-1]
-            else:
-                k.follows = r[ix-1]
-                k.followed_by = r[ix+1]
 
         return r
 
