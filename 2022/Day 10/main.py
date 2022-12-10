@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 def parse_raw_instructions(raw_instructions):
     instructions = []
 
@@ -17,25 +15,43 @@ def open_instructions(r):
         return [i.split(' ') for i in f.read().split('\n')]
 
 
-def execute_instructions(cpu, instructions):
-    signal_strength = 0
+def execute_instructions(communicator, instructions):
     for instruction in instructions:
         if instruction.operation == 'noop':
-            cpu.stack.append(0)
+            communicator.cpu.stack.append(0)
         elif instruction.operation == 'addx':
-            cpu.stack.extend([0, instruction.value])
+            communicator.cpu.stack.extend([0, instruction.value])
 
-    cpu.stack = list(reversed(cpu.stack))
+    communicator.cpu.stack = list(reversed(communicator.cpu.stack))
 
-    while len(cpu.stack) > 0:
-        cpu.cycle += 1
-        if cpu.cycle in [20, 60, 100, 140, 180, 220]:
-            signal_strength += (cpu.cycle * cpu.X)
-            print(cpu)
+    while len(communicator.cpu.stack) > 0:
+        communicator.cpu.cycle += 1
 
-        cpu.X += cpu.stack.pop()
+        if communicator.cpu.cycle in [20, 60, 100, 140, 180, 220]:
+            communicator.signal_strength += (communicator.cpu.cycle * communicator.cpu.X)
 
-    return signal_strength
+        communicator.draw()
+
+        communicator.cpu.X += communicator.cpu.stack.pop()
+
+
+class Communicator(object):
+    def __init__(self):
+        self.cpu = CPU()
+        self.display = Display()
+        self.signal_strength = 0
+
+    def __str__(self):
+        return f'Cycle: {self.cpu.cycle}\n' \
+               f'X:     {self.cpu.X}\n' \
+               f'Sprite:{list(range(self.cpu.X - 1, self.cpu.X + 2))}\n' \
+               f'{self.display}'
+
+    def draw(self):
+        if (self.cpu.cycle % 40) - 1 in list(range(self.cpu.X - 1, self.cpu.X + 2)):
+            self.display.pixels.append('█')
+        else:
+            self.display.pixels.append(' ')
 
 
 class CPU(object):
@@ -48,9 +64,17 @@ class CPU(object):
         return f'Cycles: {self.cycle}\n' \
                f'X: {self.X}\n'
 
+
 class Display(object):
     def __init__(self):
-        self.pixels = [['.'*40]*6]
+        self.pixels = []
+
+    def __str__(self):
+        return '\n'.join(self._wrap_lines())
+
+    def _wrap_lines(self):
+        for i in range(0, len(self.pixels), 40):
+            yield ''.join(self.pixels[i:i + 40])
 
 
 class Instruction(object):
@@ -74,9 +98,13 @@ if __name__ == '__main__':
 
     raw_instructions = open_instructions(puzzle_input)
     instructions = parse_raw_instructions(raw_instructions)
-    cpu = CPU()
 
-    signal_strength = execute_instructions(cpu, instructions)
+    communicator = Communicator()
 
-    print(f'Part 1: {signal_strength}')
+    execute_instructions(communicator, instructions)
+
+    print(f'Part 1: {communicator.signal_strength}')
+    print('Part 2:')
+    print(communicator.display)
+
 
