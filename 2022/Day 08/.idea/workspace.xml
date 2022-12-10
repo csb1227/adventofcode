@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dcb9a85e-4723-42fc-a9f5-3250c91425d5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../Day 09/input/example_part2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Day 09/part2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
