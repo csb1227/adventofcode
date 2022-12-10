@@ -106,5 +106,3 @@ if __name__ == '__main__':
     print(f'Part 1: {communicator.signal_strength}')
     print('Part 2:')
     print(communicator.display)
-
-
