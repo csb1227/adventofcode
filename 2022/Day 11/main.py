@@ -1,4 +1,6 @@
 import math
+from collections import defaultdict
+
 
 class Me(object):
     def __init__(self):
@@ -30,7 +32,8 @@ class Monkey(object):
         return f'Monkey {self.id}: {self.inspected_items}'
 
     def inspect_item(self, relief):
-        worry_level = self.items.pop(0)
+        item = self.items.pop(0)
+        worry_level = item
         # print(worry_level)
         self.inspected_items += 1
         factor = worry_level if not self.worry_factor else self.worry_factor
@@ -40,9 +43,12 @@ class Monkey(object):
         elif self.worry_operation == '*':
             worry_level *= factor
 
+
+
         # print(worry_level)
-        if relief > 1:
-            worry_level = int(worry_level / relief)
+        # input()
+        if relief:
+            worry_level = worry_level // relief
         # print(worry_level)
         if worry_level % self.test_factor == 0:
             # print(f'Throw to {self.test_target_true}: {worry_level}')
@@ -62,12 +68,18 @@ class Monkey(object):
         self.items.append(item)
 
 
-def keep_away(rounds, monkeys, relief):
+def keep_away(rounds, monkeys, relief=None):
     for round in range(rounds):
         for monkey in monkeys:
             while len(monkey.items) > 0:
                 target, the_item = monkey.inspect_item(relief)
                 monkeys[target].catch(the_item)
+
+        print(f'== After round {round + 1} ==')
+        for monkey in monkeys:
+            print(monkey)
+
+
 
 def monkey_business(monkeys, n):
     sorted_mb = list(reversed(sorted([monkey.inspected_items for monkey in monkeys])))
@@ -105,15 +117,15 @@ if __name__ == '__main__':
     # for monkey in monkeys:
     #     print(monkey)
 
-    keep_away(20, monkeys_1, 3)
-
+    # keep_away(20, monkeys_1, 3)
+    #
     # for monkey in monkeys_1:
     #     print(monkey)
+    #
+    # print(f'Part 1: {monkey_business(monkeys_1, 2)}')
 
-    print(f'Part 1: {monkey_business(monkeys_1, 2)}')
-
-    # keep_away(1000, monkeys_2, 1)
+    keep_away(20, monkeys_2, 0)
     # for monkey in monkeys_2:
     #     print(monkey)
-    #
-    # print(monkey_business(monkeys_2, 2))
+
+    print(monkey_business(monkeys_2, 2))
