@@ -1,20 +1,11 @@
 import math
-from collections import defaultdict
 
 
-class Me(object):
-    def __init__(self):
-        self.worry_level = 0
-
-    def worry(self, worry_factor, worry_operation):
-        if worry_operation == '*':
-            self.worry_level *= worry_factor if worry_factor else self.worry_level
-        elif worry_operation == '+':
-            self.worry_level += worry_factor if worry_factor else self.worry_level
-
-    def relief(self):
-        self.worry_level /= 3
-        # need to round this down too
+class Item(object):
+    def __init__(self, original, monkey):
+        self.original = original
+        self.current = original
+        self.monkey = monkey
 
 
 class Monkey(object):
@@ -31,35 +22,35 @@ class Monkey(object):
     def __repr__(self):
         return f'Monkey {self.id}: {self.inspected_items}'
 
-    def inspect_item(self, relief):
+    def state(self):
+        return f'Monkey {self.id}:\n' \
+               f'  Starting items : {", ".join([str(i.original) for i in self.items])}\n' \
+               f'  Operation: new = old {self.worry_operation} {self.worry_factor if self.worry_factor else "old"}\n' \
+               f'  Test: divisible by {self.test_factor}\n' \
+               f'    If true: throw to monkey {self.test_target_true}\n' \
+               f'    If false: throw to monkey {self.test_target_false}\n'
+
+    def inspect_item(self, relief, gcd):
         item = self.items.pop(0)
-        worry_level = item
-        # print(worry_level)
+
         self.inspected_items += 1
-        factor = worry_level if not self.worry_factor else self.worry_factor
-        # print(factor)
+
+        factor = item.current if not self.worry_factor else self.worry_factor
         if self.worry_operation == '+':
-            worry_level += factor
+            item.current += factor
         elif self.worry_operation == '*':
-            worry_level *= factor
+            item.current *= factor
 
-
-
-        # print(worry_level)
-        # input()
         if relief:
-            worry_level = worry_level // relief
-        # print(worry_level)
-        if worry_level % self.test_factor == 0:
-            # print(f'Throw to {self.test_target_true}: {worry_level}')
-            # print(self.items)
-            # input()
-            return self.test_target_true, worry_level
+            item.current = item.current // relief
+
+        if gcd:
+            item.current = item.current % gcd
+
+        if item.current % self.test_factor == 0:
+            return self.test_target_true, item
         else:
-            # print(f'Throw to {self.test_target_false}: {worry_level}')
-            # print(self.items)
-            # input()
-            return self.test_target_false, worry_level
+            return self.test_target_false, item
 
     def throw(self):
         pass
@@ -68,17 +59,12 @@ class Monkey(object):
         self.items.append(item)
 
 
-def keep_away(rounds, monkeys, relief=None):
+def keep_away(rounds, monkeys, relief=None, gcd=None):
     for round in range(rounds):
         for monkey in monkeys:
             while len(monkey.items) > 0:
-                target, the_item = monkey.inspect_item(relief)
+                target, the_item = monkey.inspect_item(relief, gcd)
                 monkeys[target].catch(the_item)
-
-        print(f'== After round {round + 1} ==')
-        for monkey in monkeys:
-            print(monkey)
-
 
 
 def monkey_business(monkeys, n):
@@ -95,9 +81,12 @@ def open_input(x):
 def parse_input(x):
     for monkey in x.split('\n\n'):
         monkey_attributes = [ma.strip() for ma in monkey.split('\n')]
+        test_factor = int(monkey_attributes[3][19:])
+    for monkey in x.split('\n\n'):
+        monkey_attributes = [ma.strip() for ma in monkey.split('\n')]
         yield Monkey(
             int(monkey_attributes[0][7]),
-            [int(i) for i in monkey_attributes[1][16:].split(', ')],
+            [Item(int(i), int(monkey_attributes[0][7])) for i in monkey_attributes[1][16:].split(', ')],
             monkey_attributes[2][23:],
             monkey_attributes[2][21],
             int(monkey_attributes[3][19:]),
@@ -110,22 +99,17 @@ if __name__ == '__main__':
     example_input = './input/example.txt'
     puzzle_input = './input/puzzle.txt'
 
-    raw_instructions = open_input(example_input)
+    raw_instructions = open_input(puzzle_input)
     monkeys_1 = list(parse_input(raw_instructions))
     monkeys_2 = list(parse_input(raw_instructions))
 
-    # for monkey in monkeys:
-    #     print(monkey)
-
-    # keep_away(20, monkeys_1, 3)
+    keep_away(20, monkeys_1, 3)
     #
-    # for monkey in monkeys_1:
-    #     print(monkey)
-    #
-    # print(f'Part 1: {monkey_business(monkeys_1, 2)}')
+    print(f'Part 1: {monkey_business(monkeys_1, 2)}')
 
-    keep_away(20, monkeys_2, 0)
-    # for monkey in monkeys_2:
-    #     print(monkey)
+    gcd = 1
+    for monkey in monkeys_2:
+        gcd *= monkey.test_factor
+    keep_away(10000, monkeys_2, 0, gcd)
 
-    print(monkey_business(monkeys_2, 2))
+    print(f'Part 2: {monkey_business(monkeys_2, 2)}')
