@@ -55,6 +55,9 @@ def a_star_priority_queue(graph, start, end):
         # calculate the risk level for going into the new position
         new_risk = risk_so_far[position] + graph[new_position[1]][new_position[0]]
         # if the new position is not black listed or presents a lower risk
+        print(new_position)
+        print(risk_so_far)
+        input()
         if new_position not in closed_list or new_risk < risk_so_far[new_position]:
           risk_so_far[new_position] = new_risk
           priority = new_risk + manhattan_distance(new_position, end)
