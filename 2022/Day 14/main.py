@@ -81,6 +81,20 @@ def parse_input(x):
     return cave, sand_start
 
 
+def add_a_floor(cave, sand_start):
+    # the base of this sand pyramid could end up being as wide as the height*2 - 1
+    buffer = '.' * len(cave)
+
+    expanded_cave = []
+    for c in cave:
+        expanded_cave.append([b for b in buffer] + c + [b for b in buffer])
+
+    expanded_cave.append([b for b in '.' * len(expanded_cave[0])])
+    expanded_cave.append([b for b in '#' * len(expanded_cave[0])])
+
+    return expanded_cave, Coordinate(sand_start.x + len(cave), sand_start.y)
+
+
 def falling_sand(cave, sand_start):
     try:
         settled = False
@@ -97,6 +111,10 @@ def falling_sand(cave, sand_start):
             elif cave[position.y+1][position.x+1] == '.':
                 position.y += 1
                 position.x += 1
+            # sand at the start
+            elif cave[position.y][position.x] == 'o':
+                settled = True
+                return cave, False
             # if not then i am settled
             else:
                 cave[position.y][position.x] = 'o'
@@ -126,7 +144,12 @@ if __name__ == '__main__':
     example_input = './input/example.txt'
     puzzle_input = './input/puzzle.txt'
 
-    cave, sand_start = parse_input(puzzle_input)
+    cave, sand_start = parse_input(example_input)
 
     print(f'Part 1: {simulation(copy.copy(cave), copy.copy(sand_start))}')
+
+    cave_2, sand_start_2 = parse_input(puzzle_input)
+    cave_2, sand_start_2 = add_a_floor(cave_2, sand_start_2)
+
+    print(f'Part 2: {simulation(copy.copy(cave_2), copy.copy(sand_start_2))}')
 
