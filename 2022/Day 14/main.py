@@ -82,7 +82,6 @@ def parse_input(x):
 
 
 def add_a_floor(cave, sand_start):
-    # the base of this sand pyramid could end up being as wide as the height*2 - 1
     buffer = '.' * len(cave)
 
     expanded_cave = []
@@ -152,4 +151,3 @@ if __name__ == '__main__':
     cave_2, sand_start_2 = add_a_floor(cave_2, sand_start_2)
 
     print(f'Part 2: {simulation(copy.copy(cave_2), copy.copy(sand_start_2))}')
-
