@@ -221,27 +221,6 @@ def part_2(readout, cave_size):
     return exposed_node[0] * 4000000 + exposed_node[1]
 
 
-def cave_enumerator(cave_size):
-    for x in range(cave_size + 1):
-        for y in range(cave_size + 1):
-            yield (x, y)
-
-
-def part_two(readout, cave_size):
-    possible_holes = set()
-    impossible_holes = set()
-
-    for ro in readout:
-        print(ro)
-        beacon_distance = manhattan_distance(ro.location.as_tuple(), ro.closest_beacon.as_tuple())
-        for square in cave_enumerator(cave_size):
-            print(square)
-            if manhattan_distance(ro.location.as_tuple(), square) > beacon_distance and square not in impossible_holes:
-                possible_holes.add(square)
-            else:
-                impossible_holes.add(square)
-
-
 if __name__ == '__main__':
     simple_input = './input/simple.txt'
     example_input = './input/example.txt'
