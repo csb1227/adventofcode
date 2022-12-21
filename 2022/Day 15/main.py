@@ -42,7 +42,7 @@ def parse_input(x):
     return readout
 
 
-def part_one(readout, target_row):
+def part_1(readout, target_row):
     target_row_coverage = set()
     beacons = set()
     for ro in readout:
@@ -80,6 +80,6 @@ if __name__ == '__main__':
 
     readout = parse_input(puzzle_input)
 
-    coverage = part_one(readout, 2000000)
+    coverage = part_1(readout, 2000000)
 
     print(f'Part 1: {coverage}')
