@@ -32,10 +32,6 @@ fn extract_numbers(input : Vec<String>) -> Vec<Vec<i32>> {
         result.push(x);
     }
 
-    // for number in &result {
-    //     println!("{}", number.iter().map(|&x| x.to_string()).collect::<Vec<_>>().join(""))
-    // }
-
     return result;
 }
 
@@ -45,10 +41,6 @@ fn get_calibration_values(input: Vec<Vec<i32>>) -> Vec<i32>{
     for i in input {
         result.push((i[0] * 10) + i[i.len() - 1]);
     }
-
-    // for x in &result {
-    //     println!("{}", x)
-    // }
 
     return result;
 }
