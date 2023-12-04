@@ -2,7 +2,7 @@ use std::fs;
 use regex::Regex;
 
 fn main() {
-    let input: Vec<String> = read_input(String::from("C:/dev/adventofcode/2023/day_01/input.txt.txt"));
+    let input: Vec<String> = read_input(String::from("C:/dev/adventofcode/2023/day_01/input.txt"));
     let numbers: Vec<Vec<i32>> = extract_numbers(input);
 
     let calibration_values = get_calibration_values(numbers);

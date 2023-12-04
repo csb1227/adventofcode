@@ -10,8 +10,6 @@ class Part1:
         return sum(calibrations)
 
     def parse_puzzle_input(self):
-        result = []
-
         with open(self.puzzle_input) as file:
             result = file.read().split("\n")
 
@@ -41,3 +39,5 @@ class Part1:
             result.append((number_set[0] * 10) + number_set[-1])
 
         return result
+
+
