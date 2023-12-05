@@ -27,6 +27,13 @@ class CubeGame:
 
         return red_is_valid and green_is_valid and blue_is_valid
 
+    def fewest_possible_powers(self):
+        fewest_reds = max([r.red for r in self.rounds])
+        fewest_greens = max([r.green for r in self.rounds])
+        fewest_blues = max([r.blue for r in self.rounds])
+
+        return fewest_reds * fewest_greens * fewest_blues
+
 
 class CubeGameRound:
     def __init__(self):
