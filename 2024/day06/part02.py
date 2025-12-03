@@ -18,6 +18,11 @@ while guard_is_on_duty:
     else:
         guard_is_on_duty = False
 
+    # print(guard.view_map())
+
 guard.end_shift()
 
-print(guard)
+print(len(guard.frustrating_obstacles))
+
+# 509 too low
+# 514 too low
