@@ -22,6 +22,3 @@ for begin, end in possible_ranges:
             invalids.add(y)
 
 print(sum(invalids))
-
-# 22380332142 too low
-# 30608905813

@@ -14,7 +14,6 @@ def do_regex_stuff(length, number):
     else:
         return False
 
-
 for begin, end in valid_ranges:
     begin_int = int(begin)
     end_int = int(end)
@@ -26,8 +25,6 @@ for begin, end in valid_ranges:
         len_x = len(str(x))
 
         for i in range(1, 16):
-            if x == 111:
-                pass
             if len_x % i == 0:
                 if do_regex_stuff(i, x):
                     invalids.add(x)
