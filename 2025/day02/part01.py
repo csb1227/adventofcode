@@ -4,11 +4,8 @@ valid_ranges = read_input("input.txt")
 
 possible_ranges = eliminate_impossible_ranges(valid_ranges)
 
-print(possible_ranges)
-
 possible_ranges = eliminate_impossible_parts_of_ranges(possible_ranges)
 
-print(possible_ranges)
 invalids = set()
 
 for begin, end in possible_ranges:
